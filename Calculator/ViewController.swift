@@ -19,7 +19,19 @@ class ViewController: UIViewController {
         didSet {
             screenText.text = currentNumber
         }
+        willSet {
+            
+        }
     }
+    //первое число в операции
+    var firstNumber: String = ""
+    //второе число в операции
+    var secondNumber: String = ""
+    //тип текущей математической операции
+    var currentOperation: CurrentOperation = .noAction
+    // резултат математической операции
+    var result : Double = 0
+    
     //тип математической операции
     enum CurrentOperation {
         case noAction
@@ -27,74 +39,103 @@ class ViewController: UIViewController {
         case substruction
         case multiplication
         case division
+        
     }
     // вывод цепочки операций
     @IBOutlet weak var operations: UILabel!
-    
-    // вывод типа текущей математической операции на экран
-    @IBOutlet weak var currentoperationLabel: UILabel!
-    
-    //первое число в операции
-    var firstNumber: String = ""
-    //второе число в операции
-    var secondNumber: String = ""
-    // тип текущей математической операции
-    var currentOperation :CurrentOperation = .noAction
-    
     
     // нажатие кнопки "деление"
     @IBAction func buttonDivision(_ sender: UIButton) {
         //задание типа текущей операции "деление"
         currentOperation = .division
-        //вывод типа текущей операции в лэйблу "текущая математическая операция"
-        currentoperationLabel.text = " / "
         // запись текущего числа в "первое значение"
-        firstNumber = currentNumber
-       //запись в цепочку операций
-        operations.text! += currentNumber
-        operations.text! += "/"
-        // очистка значени текущего числа
-        currentNumber = ""
+        if Double(currentNumber) == result {
+            firstNumber = currentNumber
+            //очистка строки текущих операций
+            operations.text! = ""
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "/"
+            currentNumber = ""
+        } else {
+            firstNumber = currentNumber
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "/"
+            currentNumber = ""
+        }
     }
     
     //нажатие кнопки "умножение"
     @IBAction func buttonMultiplication(_ sender: UIButton) {
+        //задание типа текущей операции "умножение"
         currentOperation = .multiplication
-        currentoperationLabel.text = " * "
-        firstNumber = currentNumber
-      
-        operations.text! += currentNumber
-        operations.text! += "*"
-        currentNumber = ""
+        // запись текущего числа в "первое значение"
+        if Double(currentNumber) == result {
+            firstNumber = currentNumber
+            //очистка строки текущих операций
+            operations.text! = ""
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "*"
+            currentNumber = ""
+        } else {
+            firstNumber = currentNumber
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "*"
+            currentNumber = ""
+        }
     }
     
     //нажатие кнопки "вычитание"
     @IBAction func buttonSubstraction(_ sender: UIButton) {
+        // задание типа текущей операции "вычитание"
         currentOperation = .substruction
-        currentoperationLabel.text = " - "
-        firstNumber = currentNumber
-     
-        operations.text! += currentNumber
-        operations.text! += " - "
-        currentNumber = ""
+        // запись текущего числа в "первое значение"
+        if Double(currentNumber) == result {
+            firstNumber = currentNumber
+            //очистка строки текущих операций
+            operations.text! = ""
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "-"
+            currentNumber = ""
+        } else {
+            firstNumber = currentNumber
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "-"
+            currentNumber = ""
+        }
     }
     
     //нажатие кнопки "сложение"
     @IBAction func buttonAddition(_ sender: UIButton) {
+        // задание типа операции "сложение"
         currentOperation = .addition
-        currentoperationLabel.text = " + "
-        firstNumber = currentNumber
-       
-        operations.text! += currentNumber
-        operations.text! += " + "
-        currentNumber = ""
+        //запись текущего числа в "первое значение"
+        if Double(currentNumber) == result {
+            firstNumber = currentNumber
+            //очистка строки текущих операций
+            operations.text! = ""
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "+"
+            currentNumber = ""
+        } else {
+            firstNumber = currentNumber
+            //запись в цепочку операций
+            operations.text! += currentNumber
+            operations.text! += "+"
+            currentNumber = ""
+        }
     }
     
-    
-    
-    
-    
+    //вывод текущего значения на экран
     @IBOutlet weak var screenText: UILabel!
+    
+    //нажатие кнопки добавляет цифру в текущее значение
     @IBAction func button0(_ sender: UIButton) {currentNumber += "0"}
     @IBAction func button1(_ sender: UIButton) {currentNumber += "1"}
     @IBAction func button2(_ sender: UIButton) {currentNumber += "2"}
@@ -105,45 +146,84 @@ class ViewController: UIViewController {
     @IBAction func button7(_ sender: UIButton) {currentNumber += "7"}
     @IBAction func button8(_ sender: UIButton) {currentNumber += "8"}
     @IBAction func button9(_ sender: UIButton) {currentNumber += "9"}
-    @IBAction func buttonComma(_ sender: UIButton) {currentNumber += "."}
+    @IBAction func buttonComma(_ sender: UIButton) {
+        if currentNumber.contains(".") {
+            currentNumber.removeLast()
+        } else {
+            currentNumber += "."
+        }
+    }
+    @IBAction func buttonMinus(_ sender: UIButton) {
+        if currentNumber.contains("-") {
+            currentNumber.remove(at: currentNumber.startIndex)
+        } else {
+            currentNumber.insert("-", at: currentNumber.startIndex)
+        }
+    }
     
-    
+    // нажатие кнопки "очистка всех значений"
     @IBAction func allClear(_ sender: UIButton) {
+        // очистка текущего значения
         currentNumber = ""
+        // задание типа математической операции "нет события"
         currentOperation = .noAction
+        // очистка значения "первое число"
         firstNumber = ""
-        currentoperationLabel.text = " "
+        //очистка поля цепочки текущих операций
         operations.text! = ""
     }
-    var result : Double = 0
     
+    //нажатие кнопки текущего значения
+    @IBAction func buttonClear(_ sender: UIButton) {
+        currentNumber = ""
+    }
+    
+    // нажатие кнопки "равно"
     @IBAction func calculation(_ sender: UIButton) {
+        // присвоение текущего числа во "второе значение"
         secondNumber = currentNumber
+        // выбор математической операции от состояния типа математической операции
         switch currentOperation {
         case .addition :
-            operations.text! += currentNumber
+            // добавление "второго значения" в поле текущих операций
+            operations.text! += secondNumber
+            // вычисление суммы первого и второго значения
             result = Double(firstNumber)!  + Double(secondNumber)!
-            currentNumber = String(result)
-            operations.text! += " = \(result)"
+            //очистка поля текущее значение
+            currentNumber = "\(result)"
+            // вывод результата в поле текущих операций
+            operations.text! += " = \(result); "
         case .substruction :
-            operations.text! += currentNumber
+            // добавление "второго значения" в поле текущих операций
+            operations.text! += secondNumber
+            // вычисление разности первого и второго значения
             result = Double(firstNumber)! - Double(secondNumber)!
-            currentNumber = String(result)
-            operations.text! += " = \(result)"
+            //очистка поля текущее значение
+            currentNumber = "\(result)"
+            // вывод результата в поле текущих операций
+            operations.text! += " = \(result); "
         case .multiplication :
-            operations.text! += currentNumber
+            // добавление "второго значения" в поле текущих операций
+            operations.text! += secondNumber
+            // вычисление произведения первого и второго значения
             result = Double(firstNumber)! * Double(secondNumber)!
-            currentNumber = String(result)
-            operations.text! += " = \(result)"
+            //очистка поля текущее значение
+            currentNumber = "\(result)"
+            // вывод результата в поле текущих операций
+            operations.text! += " = \(result); "
         case .division :
-            operations.text! += currentNumber
+            // добавление "второго значения" в поле текущих операций
+            operations.text! += secondNumber
+            // вычисление деления первого и второго значения
             result = Double(firstNumber)! / Double(secondNumber)!
-            currentNumber = String(result)
-            operations.text! += " = \(result)"
+            //очистка поля текущее значение
+            currentNumber = "\(result)"
+            // вывод результата в поле текущих операций
+            operations.text! += " = \(result); "
         case .noAction:
             break
         }
-        
+       
     }
     
     
